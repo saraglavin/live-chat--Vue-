@@ -6,18 +6,27 @@ import { projectAuth } from "../firebase/config"
 // auth guard
 const requireAuth = (to, from, next) => {
   let user = projectAuth.currentUser
-  console.log('CU in auth guard: ', user)
   if(!user) {
     next({ name: 'Welcome'})
   }
   next()
 }
 
+const requireNoAuth = (to, from, next) => {
+  let user = projectAuth.currentUser
+  if(user) {
+    next({ name: 'Chatroom'})
+  }
+  next()
+
+}
+
 const routes = [
     {
       path: '/',
       name: "Welcome",
-      component: Welcome
+      component: Welcome,
+      beforeEnter: requireNoAuth
     },
     {
       path: '/chatroom',
